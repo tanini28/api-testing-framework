@@ -11,11 +11,13 @@ import io.qameta.allure.restassured.AllureRestAssured;
 import org.example.config.TestConfig;
 import io.restassured.specification.RequestSpecification;
 
+import java.util.Map;
+
 import static io.restassured.RestAssured.given;
 
 public class ApiUtils {
     private static final TestConfig config = TestConfig.getInstance();
-    private static RequestSpecification requestSpec;;
+    private static final RequestSpecification requestSpec;
 
     static {
         RestAssured.baseURI = config.getBaseUrl();
@@ -29,16 +31,16 @@ public class ApiUtils {
                 .build();
     }
 
-    public static Response get(String endpoint, Object... pathParams){
+    public static Response get(String endpoint){
         return given()
                 .spec(requestSpec)
-                .pathParams(pathParams)
-                .when
+                .when()
                 .get(endpoint)
                 .then()
                 .extract()
-                .responce();
+                .response();
     }
+
 
     public static Response post(String endpoint, Object body, Object... pathParams) {
         return given()

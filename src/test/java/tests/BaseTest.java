@@ -29,9 +29,9 @@ public class BaseTest {
                 new RequestLoggingFilter(LogDetail.ALL),
                 new ResponseLoggingFilter(LogDetail.ALL)
         );
-        LogUtils.logInfo(logger, "Налаштування тестового середовища завершено");
-        LogUtils.logInfo(logger, "Базовий URL API: " + config.getBaseUrl());
-        LogUtils.logInfo(logger, "Кількість потоків для тестів: " + config.getThreadCount());
+        LogUtils.logInfo(logger, "Test environment setup completed");
+        LogUtils.logInfo(logger, "Base API URL: " + config.getBaseUrl());
+        LogUtils.logInfo(logger, "Thread count for tests: " + config.getThreadCount());
     }
 
     @BeforeMethod
@@ -42,10 +42,10 @@ public class BaseTest {
     @AfterMethod
     public void afterMethod(ITestResult result, Method method) {
         if (result.getStatus() == ITestResult.FAILURE) {
-            LogUtils.logError(logger, "Тест " + method.getName() + " не пройшов");
-            LogUtils.logError(logger, "Причина помилки: " + result.getThrowable().getMessage());
+            LogUtils.logError(logger, "Test " + method.getName() + " failed");
+            LogUtils.logError(logger, "Error reason: " + result.getThrowable().getMessage());
         } else if (result.getStatus() == ITestResult.SUCCESS) {
-            LogUtils.logInfo(logger, "Тест " + method.getName() + " успішно пройшов");
+            LogUtils.logInfo(logger, "Test " + method.getName() + " passed successfully");
         }
         LogUtils.logEnd(logger, method.getName());
     }

@@ -68,7 +68,7 @@ public class Player {
     }
 
     public static Player createInvalidTooOld() {
-        Player player = createInvalidTooOld();
+        Player player = createValidPlayer();
         player.setAge(70);
         return player;
     }

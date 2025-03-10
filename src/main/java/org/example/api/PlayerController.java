@@ -17,27 +17,27 @@ public class PlayerController {
     private static final String GET_PLAYER_ENDPOINT = "/player/get";
     private static final String UPDATE_PLAYER_ENDPOINT = "/player/update/{editor}/{id}";
 
-    @Step("Створення нового гравця з редактором {editor}")
+    @Step("Creating a new player with editor {editor}")
     public static Response createPlayer(String editor, Player player) {
-        LogUtils.logInfo(logger, "Створення нового гравця: " + player.getLogin() + " редактором: " + editor);
+        LogUtils.logInfo(logger, "Creating a new player: " + player.getLogin() + " with editor: " + editor);
         return ApiUtils.post(CREATE_PLAYER_ENDPOINT, player, editor);
     }
 
-    @Step("Отримання гравця за ID: {playerId}")
+    @Step("Getting player by ID: {playerId}")
     public static Response getPlayer(Long playerId) {
-        LogUtils.logInfo(logger, "Отримання гравця з ID: " + playerId);
+        LogUtils.logInfo(logger, "Getting player with ID: " + playerId);
         return ApiUtils.get(GET_PLAYER_ENDPOINT + "?playerId=" + playerId);
     }
 
-    @Step("Оновлення гравця з ID: {id} редактором {editor}")
+    @Step("Updating player with ID: {id} by editor {editor}")
     public static Response updatePlayer(String editor, Long id, Player player) {
-        LogUtils.logInfo(logger, "Оновлення гравця з ID: " + id + " редактором: " + editor);
+        LogUtils.logInfo(logger, "Updating player with ID: " + id + " by editor: " + editor);
         return ApiUtils.put(UPDATE_PLAYER_ENDPOINT, player, editor, id);
     }
 
-    @Step("Видалення гравця з ID: {playerId} редактором {editor}")
+    @Step("Deleting player with ID: {playerId} by editor {editor}")
     public static Response deletePlayer(String editor, Long playerId) {
-        LogUtils.logInfo(logger, "Видалення гравця з ID: " + playerId + " редактором: " + editor);
+        LogUtils.logInfo(logger, "Deleting player with ID: " + playerId + " by editor: " + editor);
         return ApiUtils.delete(DELETE_PLAYER_ENDPOINT + "?playerId=" + playerId, null, editor);
     }
 }
