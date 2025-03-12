@@ -12,16 +12,17 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <rest-assured.version>4.5.1</rest-assured.version>
-        <testng.version>7.5</testng.version>
-        <jackson.version>2.13.2</jackson.version>
-        <lombok.version>1.18.22</lombok.version>
-        <allure.version>2.17.3</allure.version>
-        <log4j.version>2.17.2</log4j.version>
-        <aspectj.version>1.9.9.1</aspectj.version>
+        <rest-assured.version>5.5.1</rest-assured.version>
+        <testng.version>7.11.0</testng.version>
+        <jackson.version>2.18.3</jackson.version>
+        <lombok.version>1.18.36</lombok.version>
+        <allure.version>2.29.1</allure.version>
+        <log4j.version>2.24.3</log4j.version>
+        <aspectj.version>1.9.22.1</aspectj.version>
     </properties>
 
     <dependencies>
+
         <dependency>
           <groupId>io.rest-assured</groupId>
           <artifactId>rest-assured</artifactId>
@@ -80,6 +81,7 @@
             <version>2.24.3</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
@@ -92,6 +94,7 @@
             <version>5.5.1</version>
             <scope>compile</scope>
         </dependency>
+
     </dependencies>
 
     <build>
