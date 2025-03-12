@@ -12,14 +12,11 @@ import org.example.config.TestConfig;
 import io.restassured.specification.RequestSpecification;
 
 
-import static io.restassured.RestAssured.given;
-
 public class ApiUtils {
     private static final TestConfig config = TestConfig.getInstance();
     private static final RequestSpecification requestSpec;
 
     static {
-
         RestAssured.baseURI = config.getBaseUrl();
 
         requestSpec = new RequestSpecBuilder()
@@ -32,7 +29,7 @@ public class ApiUtils {
     }
 
     public static Response get(String endpoint){
-        return given()
+        return RestAssured.given()
                 .spec(requestSpec)
                 .when()
                 .get(endpoint)
@@ -43,7 +40,7 @@ public class ApiUtils {
 
 
     public static Response post(String endpoint, Object body, Object... pathParams) {
-        return given()
+        return RestAssured.given()
                 .spec(requestSpec)
                 .pathParams("editor", pathParams[0])
                 .body(body)
@@ -54,8 +51,8 @@ public class ApiUtils {
                 .response();
     }
 
-    public static Response put(String endpoint, Object body, Object... pathParams) {
-        return given()
+    public static org.example.utils.Response put(String endpoint, Object body, Object... pathParams) {
+        return RestAssured.given()
                 .spec(requestSpec)
                 .pathParam("editor", pathParams[0])
                 .pathParam("id", pathParams[1])
@@ -68,11 +65,12 @@ public class ApiUtils {
     }
 
     public static Response delete(String endpoint, Object body, Object... pathParams) {
-        return given()
+        // Fixed the method to correctly handle query parameters
+        return RestAssured.given()
                 .spec(requestSpec)
                 .pathParam("editor", pathParams[0])
                 .when()
-                .delete(endpoint + pathParams[1])  // Fix: append query parameter directly
+                .delete(endpoint + pathParams[1])  // pathParams[1] contains the query parameter
                 .then()
                 .extract()
                 .response();

@@ -426,7 +426,6 @@ public class PlayerControllerTest extends BaseTest{
         String duplicateScreenName = "DuplicateScreen" + System.currentTimeMillis();
         player1.setScreenName(duplicateScreenName);
 
-        Response response1 = PlayerController.createPlayer
                 (config.getSupervisorLogin(), player1);
         assertEquals(response1.getStatusCode(), 200,
                 "The response code should be 200");
