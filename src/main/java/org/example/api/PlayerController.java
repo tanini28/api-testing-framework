@@ -38,6 +38,6 @@ public class PlayerController {
     @Step("Deleting player with ID: {playerId} by editor {editor}")
     public static Response deletePlayer(String editor, Long playerId) {
         LogUtils.logInfo(logger, "Deleting player with ID: " + playerId + " by editor: " + editor);
-        return ApiUtils.delete(DELETE_PLAYER_ENDPOINT + "?playerId=" + playerId, null, editor);
+        return ApiUtils.delete(DELETE_PLAYER_ENDPOINT, null, editor, "?playerId=" + playerId);
     }
 }

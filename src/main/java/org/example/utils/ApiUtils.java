@@ -11,7 +11,6 @@ import io.qameta.allure.restassured.AllureRestAssured;
 import org.example.config.TestConfig;
 import io.restassured.specification.RequestSpecification;
 
-import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 
@@ -20,6 +19,7 @@ public class ApiUtils {
     private static final RequestSpecification requestSpec;
 
     static {
+
         RestAssured.baseURI = config.getBaseUrl();
 
         requestSpec = new RequestSpecBuilder()
@@ -45,7 +45,7 @@ public class ApiUtils {
     public static Response post(String endpoint, Object body, Object... pathParams) {
         return given()
                 .spec(requestSpec)
-                .pathParams(pathParams)
+                .pathParams("editor", pathParams[0])
                 .body(body)
                 .when()
                 .post(endpoint)
@@ -57,7 +57,8 @@ public class ApiUtils {
     public static Response put(String endpoint, Object body, Object... pathParams) {
         return given()
                 .spec(requestSpec)
-                .pathParams(pathParams)
+                .pathParam("editor", pathParams[0])
+                .pathParam("id", pathParams[1])
                 .body(body)
                 .when()
                 .put(endpoint)
@@ -69,7 +70,7 @@ public class ApiUtils {
     public static Response delete(String endpoint, Object body, Object... pathParams) {
         return given()
                 .spec(requestSpec)
-                .pathParams(pathParams)
+                .pathParam("editor", pathParams[0])
                 .body(body)
                 .when()
                 .delete(endpoint)
