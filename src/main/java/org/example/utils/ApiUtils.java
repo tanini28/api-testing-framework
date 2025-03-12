@@ -71,9 +71,8 @@ public class ApiUtils {
         return given()
                 .spec(requestSpec)
                 .pathParam("editor", pathParams[0])
-                .body(body)
                 .when()
-                .delete(endpoint)
+                .delete(endpoint + pathParams[1])  // Fix: append query parameter directly
                 .then()
                 .extract()
                 .response();

@@ -13,12 +13,14 @@ public class TestConfig {
     private static TestConfig instance;
     private final Properties properties;
 
+    static {
+        instance = new TestConfig();
+    }
+
     private TestConfig() {
         properties = new Properties();
         try {
-
             InputStream input = getClass().getClassLoader().getResourceAsStream("test.properties");
-
 
             if (input == null) {
                 System.out.println("Unable to find test.properties in classpath, trying file system...");
@@ -44,12 +46,35 @@ public class TestConfig {
         }
     }
 
-    private static void setInstance(TestConfig instance) {
-        TestConfig.instance = instance;
+    public String getBaseUrl() {
+        return properties.getProperty("api.base.url");
+    }
+
+    public String getSwaggerUrl() {
+        return properties.getProperty("api.swagger.url");
+    }
+
+    public int getThreadCount() {
+        return Integer.parseInt(properties.getProperty("test.thread.count", "3"));
+    }
+
+    public String getSupervisorLogin() {
+        return properties.getProperty("user.supervisor.login");
+    }
+
+    public String getSupervisorPassword() {
+        return properties.getProperty("user.supervisor.password");
+    }
+
+    public String getAdminLogin() {
+        return properties.getProperty("user.admin.login");
+    }
+
+    public String getAdminPassword() {
+        return properties.getProperty("user.admin.password");
     }
 
     private void setDefaultProperties() {
-
         properties.setProperty("api.base.url", "http://localhost:8080");
         properties.setProperty("api.swagger.url", "http://localhost:8080/swagger-ui.html");
         properties.setProperty("test.thread.count", "3");
@@ -61,5 +86,4 @@ public class TestConfig {
         properties.setProperty("logging.file.path", "logs");
         properties.setProperty("logging.file.name", "api-tests.log");
     }
-
 }
