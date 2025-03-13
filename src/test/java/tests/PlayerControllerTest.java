@@ -363,7 +363,8 @@ public class PlayerControllerTest extends BaseTest{
                 "The response code should be 200");
         Player createdUser = createResponse.as(Player.class);
 
-        Response response = PlayerController.deletePlayer(createdUser.getLogin(), createdPlayerId);
+        Response response = PlayerController.deletePlayer
+                (createdUser.getLogin(), createdPlayerId);
 
         assertEquals(response.getStatusCode(), 403,
                 "The response code should be 403 (Forbidden)");
@@ -400,7 +401,8 @@ public class PlayerControllerTest extends BaseTest{
         String duplicateLogin = "duplicate" + System.currentTimeMillis();
         player1.setLogin(duplicateLogin);
 
-        Response response1 = PlayerController.createPlayer(config.getSupervisorLogin(), player1);
+        Response response1 = PlayerController.createPlayer
+                (config.getSupervisorLogin(), player1);
         assertEquals(response1.getStatusCode(), 200,
                 "The response code should be 200");
 
@@ -433,7 +435,8 @@ public class PlayerControllerTest extends BaseTest{
         Player player2 = Player.createValidPlayer();
         player2.setScreenName(duplicateScreenName);
 
-        Response response2 = PlayerController.createPlayer(config.getSupervisorLogin(), player2);
+        Response response2 = PlayerController.createPlayer
+                (config.getSupervisorLogin(), player2);
 
         assertEquals(response2.getStatusCode(), 400,
                 "Response code should be 400 - duplicate screenName not allowed");

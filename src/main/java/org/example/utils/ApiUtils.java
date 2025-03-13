@@ -29,7 +29,7 @@ public class ApiUtils {
     }
 
     public static Response get(String endpoint){
-        return RestAssured.given()
+        return given()
                 .spec(requestSpec)
                 .when()
                 .get(endpoint)
@@ -40,7 +40,7 @@ public class ApiUtils {
 
 
     public static Response post(String endpoint, Object body, Object... pathParams) {
-        return RestAssured.given()
+        return given()
                 .spec(requestSpec)
                 .pathParams("editor", pathParams[0])
                 .body(body)
@@ -51,8 +51,8 @@ public class ApiUtils {
                 .response();
     }
 
-    public static org.example.utils.Response put(String endpoint, Object body, Object... pathParams) {
-        return RestAssured.given()
+    public static Response put(String endpoint, Object body, Object... pathParams) {
+        return given()
                 .spec(requestSpec)
                 .pathParam("editor", pathParams[0])
                 .pathParam("id", pathParams[1])
@@ -65,8 +65,7 @@ public class ApiUtils {
     }
 
     public static Response delete(String endpoint, Object body, Object... pathParams) {
-        // Fixed the method to correctly handle query parameters
-        return RestAssured.given()
+        return given()
                 .spec(requestSpec)
                 .pathParam("editor", pathParams[0])
                 .when()
