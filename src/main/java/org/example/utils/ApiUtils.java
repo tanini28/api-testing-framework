@@ -1,5 +1,7 @@
 package org.example.utils;
 
+
+import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
@@ -7,9 +9,8 @@ import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-import io.qameta.allure.restassured.AllureRestAssured;
-import org.example.config.TestConfig;
 import io.restassured.specification.RequestSpecification;
+import org.example.config.TestConfig;
 
 
 public class ApiUtils {
@@ -28,8 +29,8 @@ public class ApiUtils {
                 .build();
     }
 
-    public static Response get(String endpoint){
-        return given()
+    public static Response get(String endpoint) {
+        return RestAssured.given()
                 .spec(requestSpec)
                 .when()
                 .get(endpoint)
@@ -38,13 +39,14 @@ public class ApiUtils {
                 .response();
     }
 
-
     public static Response post(String endpoint, Object body, Object... pathParams) {
-        return given()
-                .spec(requestSpec)
-                .pathParams("editor", pathParams[0])
-                .body(body)
-                .when()
+        var request = RestAssured.given().spec(requestSpec).body(body);
+
+        if (pathParams.length > 0) {
+            request.pathParam("editor", String.valueOf(pathParams[0]));
+        }
+
+        return request.when()
                 .post(endpoint)
                 .then()
                 .extract()
@@ -52,24 +54,34 @@ public class ApiUtils {
     }
 
     public static Response put(String endpoint, Object body, Object... pathParams) {
-        return given()
-                .spec(requestSpec)
-                .pathParam("editor", pathParams[0])
-                .pathParam("id", pathParams[1])
-                .body(body)
-                .when()
+        var request = RestAssured.given().spec(requestSpec).body(body);
+
+        if (pathParams.length > 0) {
+            request.pathParam("editor", String.valueOf(pathParams[0]));
+        }
+        if (pathParams.length > 1) {
+            request.pathParam("id", String.valueOf(pathParams[1]));
+        }
+
+        return request.when()
                 .put(endpoint)
                 .then()
                 .extract()
                 .response();
     }
 
-    public static Response delete(String endpoint, Object body, Object... pathParams) {
-        return given()
-                .spec(requestSpec)
-                .pathParam("editor", pathParams[0])
-                .when()
-                .delete(endpoint + pathParams[1])  // pathParams[1] contains the query parameter
+    public static Response delete(String endpoint, Object... pathParams) {
+        var request = RestAssured.given().spec(requestSpec);
+
+        if (pathParams.length > 0) {
+            request.pathParam("editor", String.valueOf(pathParams[0]));
+        }
+        if (pathParams.length > 1) {
+            request.pathParam("id", String.valueOf(pathParams[1]));
+        }
+
+        return request.when()
+                .delete(endpoint)
                 .then()
                 .extract()
                 .response();

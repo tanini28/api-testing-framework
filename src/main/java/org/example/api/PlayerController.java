@@ -5,8 +5,9 @@ import io.restassured.response.Response;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.example.models.Player;
-import org.example.utils.ApiUtils;
 import org.example.utils.LogUtils;
+
+import static io.restassured.RestAssured.*;
 
 public class PlayerController {
 
@@ -20,24 +21,24 @@ public class PlayerController {
     @Step("Creating a new player with editor {editor}")
     public static Response createPlayer(String editor, Player player) {
         LogUtils.logInfo(logger, "Creating a new player: " + player.getLogin() + " with editor: " + editor);
-        return ApiUtils.post(CREATE_PLAYER_ENDPOINT, player, editor);
+        return post(CREATE_PLAYER_ENDPOINT, player, editor);
     }
 
     @Step("Getting player by ID: {playerId}")
     public static Response getPlayer(Long playerId) {
         LogUtils.logInfo(logger, "Getting player with ID: " + playerId);
-        return ApiUtils.get(GET_PLAYER_ENDPOINT + "?playerId=" + playerId);
+        return get(GET_PLAYER_ENDPOINT + "?playerId=" + playerId);
     }
 
     @Step("Updating player with ID: {id} by editor {editor}")
     public static Response updatePlayer(String editor, Long id, Player player) {
         LogUtils.logInfo(logger, "Updating player with ID: " + id + " by editor: " + editor);
-        return ApiUtils.put(UPDATE_PLAYER_ENDPOINT, player, editor, id);
+        return put(UPDATE_PLAYER_ENDPOINT, player, editor, id);
     }
 
     @Step("Deleting player with ID: {playerId} by editor {editor}")
     public static Response deletePlayer(String editor, Long playerId) {
         LogUtils.logInfo(logger, "Deleting player with ID: " + playerId + " by editor: " + editor);
-        return ApiUtils.delete(DELETE_PLAYER_ENDPOINT, null, editor, "?playerId=" + playerId);
+        return delete(DELETE_PLAYER_ENDPOINT, null, editor, "?playerId=" + playerId);
     }
 }
