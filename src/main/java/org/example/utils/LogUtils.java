@@ -12,14 +12,6 @@ public class LogUtils {
         logger.error("ERROR: " + message);
     }
 
-    public static void logDebug(Logger logger, String message) {
-        logger.debug("DEBUG: " + message);
-    }
-
-    public static void logWarning(Logger logger, String message) {
-        logger.warn("WARNING: " + message);
-    }
-
     public static void logStart(Logger logger, String testName) {
         logger.info("=================================");
         logger.info("STARTING TEST: " + testName);

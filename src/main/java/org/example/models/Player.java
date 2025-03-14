@@ -21,6 +21,12 @@ public class Player {
     private String role;
     private String screenName;
 
+    private static final int MIN_AGE = 16;
+    private static final int MAX_AGE = 60;
+    private static final String[] VALID_GENDERS = {"male", "female"};
+    private static final String[] VALID_ROLES = {"user", "admin"};
+    private static final int MIN_PASSWORD_LENGTH = 8;
+
     public static Player createValidPlayer() {
         return Player.builder()
                 .age(25)
@@ -45,23 +51,23 @@ public class Player {
 
     public static Player createInvalidAgeTooYoung() {
         Player player = createValidPlayer();
-        player.setAge(15);
+        player.setAge(MIN_AGE - 1);
         return player;
     }
 
-    public static Player createInvalidRole(){
+    public static Player createInvalidRole() {
         Player player = createValidPlayer();
         player.setRole("supervisor");
         return player;
     }
 
-    public static Player createInvalidPassword(){
+    public static Player createInvalidPassword() {
         Player player = createValidPlayer();
         player.setPassword("short");
         return player;
     }
 
-    public static Player createInvalidGender(){
+    public static Player createInvalidGender() {
         Player player = createValidPlayer();
         player.setGender("unknown");
         return player;
@@ -69,7 +75,7 @@ public class Player {
 
     public static Player createInvalidTooOld() {
         Player player = createValidPlayer();
-        player.setAge(70);
+        player.setAge(MAX_AGE + 10);
         return player;
     }
 }

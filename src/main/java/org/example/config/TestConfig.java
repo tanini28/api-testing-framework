@@ -1,6 +1,8 @@
 package org.example.config;
 
-import lombok.Getter;
+import lombok.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -8,6 +10,8 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public class TestConfig {
+
+    private static final Logger logger = LogManager.getLogger(TestConfig.class);
 
     @Getter
     private static TestConfig instance;
@@ -19,39 +23,41 @@ public class TestConfig {
 
     private TestConfig() {
         properties = new Properties();
-        try {
-            InputStream input = getClass().getClassLoader().getResourceAsStream("test.properties");
+        loadProperties();
+    }
 
-            if (input == null) {
-                System.out.println("Unable to find test.properties in classpath, trying file system...");
-                try {
-                    input = new FileInputStream("src/main/resources/test.properties");
-                } catch (IOException e) {
-                    System.out.println("Unable to find test.properties in file system");
-                }
-            }
-
+    private void loadProperties() {
+        try (InputStream input = getPropertiesStream()) {
             if (input != null) {
                 properties.load(input);
-                input.close();
-                System.out.println("Successfully loaded test.properties");
+                logger.info("Successfully loaded test.properties");
             } else {
-                System.out.println("Unable to find test.properties, using default values");
+                logger.warn("Unable to find test.properties, using default values");
                 setDefaultProperties();
             }
         } catch (IOException ex) {
-            System.out.println("Error loading test.properties: " + ex.getMessage());
-            ex.printStackTrace();
+            logger.error("Error loading test.properties: " + ex.getMessage(), ex);
             setDefaultProperties();
         }
     }
 
-    public String getBaseUrl() {
-        return properties.getProperty("api.base.url");
+    private InputStream getPropertiesStream() {
+        InputStream input = getClass().getClassLoader().getResourceAsStream("test.properties");
+
+        if (input == null) {
+            logger.info("Unable to find test.properties in classpath, trying file system...");
+            try {
+                input = new FileInputStream("src/main/resources/test.properties");
+            } catch (IOException e) {
+                logger.info("Unable to find test.properties in file system");
+            }
+        }
+
+        return input;
     }
 
-    public String getSwaggerUrl() {
-        return properties.getProperty("api.swagger.url");
+    public String getBaseUrl() {
+        return properties.getProperty("api.base.url");
     }
 
     public int getThreadCount() {

@@ -7,7 +7,6 @@ import io.qameta.allure.Story;
 
 
 import io.restassured.response.Response;
-import org.example.api.PlayerController;
 import org.example.models.Player;
 import org.testng.annotations.Test;
 
@@ -24,16 +23,13 @@ public class PlayerControllerTest extends BaseTest{
     @Story("Create Player")
     @Description("Positive test: Creating a new player with valid data")
     public void testCreatePlayerPositive() {
-
         Player player = Player.createValidPlayer();
-
-        Response response = PlayerController.createPlayer
-                (config.getSupervisorLogin(), player);
+        Response response = playerController.createPlayer
+                (config.getSupervisorLogin(), config.getSupervisorPassword(), player);
 
         assertEquals(response.getStatusCode(), 200,
                 "The response code should be 200");
         Player createdPlayer = response.as(Player.class);
-
         createdPlayerId = createdPlayer.getId();
 
         assertEquals(createdPlayer.getLogin(), player.getLogin(),
@@ -52,17 +48,15 @@ public class PlayerControllerTest extends BaseTest{
     @Story("Create Player")
     @Description("Negative test: Creating a player with a too young age (less than 16)")
     public void testCreatePlayerNegativeAgeTooYoung() {
-
         Player player = Player.createInvalidAgeTooYoung();
-
-        Response response = PlayerController.createPlayer
-                (config.getSupervisorLogin(), player);
+        Response response = playerController.createPlayer
+                (config.getSupervisorLogin(), config.getSupervisorPassword(), player);
 
         assertEquals(response.getStatusCode(), 405,
+
                 "The response code should be 405");
         String errorMsg = response.getBody().asString();
-        assertTrue(errorMsg.contains("age"),
-                "The error message should include age information");
+        assertTrue(errorMsg.contains("age"), "The error message should include age information");
     }
 
     @Test(priority = 3)
@@ -72,8 +66,8 @@ public class PlayerControllerTest extends BaseTest{
 
         Player player = Player.createInvalidTooOld();
 
-        Response response = PlayerController.createPlayer
-                (config.getSupervisorLogin(), player);
+        Response response = playerController.createPlayer
+                (config.getSupervisorLogin(), config.getSupervisorPassword(), player);
 
         assertEquals(response.getStatusCode(), 400,
                 "The response code should be 400");
@@ -86,11 +80,11 @@ public class PlayerControllerTest extends BaseTest{
     @Story("Create Player")
     @Description("Negative test: Creating a player with an invalid role")
     public void testCreatePlayerNegativeInvalidRole() {
-        // Підготовка тестових даних
+
         Player player = Player.createInvalidRole();
 
-        Response response = PlayerController.createPlayer
-                (config.getSupervisorLogin(), player);
+        Response response = playerController.createPlayer
+                (config.getSupervisorLogin(), config.getSupervisorPassword(), player);
 
         assertEquals(response.getStatusCode(), 400,
                 "The response code should be 400");
@@ -106,8 +100,8 @@ public class PlayerControllerTest extends BaseTest{
 
         Player player = Player.createInvalidPassword();
 
-        Response response = PlayerController.createPlayer
-                (config.getSupervisorLogin(), player);
+        Response response = playerController.createPlayer
+                (config.getSupervisorLogin(), config.getSupervisorPassword(), player);
 
         assertEquals(response.getStatusCode(), 400,
                 "Код відповіді має бути 400");
@@ -123,8 +117,8 @@ public class PlayerControllerTest extends BaseTest{
 
         Player player = Player.createInvalidGender();
 
-        Response response = PlayerController.createPlayer
-                (config.getSupervisorLogin(), player);
+        Response response = playerController.createPlayer
+                (config.getSupervisorLogin(), config.getSupervisorPassword(), player);
 
         assertEquals(response.getStatusCode(), 400,
                 "Код відповіді має бути 400");
@@ -141,15 +135,15 @@ public class PlayerControllerTest extends BaseTest{
 
         Player regularUser = Player.createValidPlayer();
 
-        Response createResponse = PlayerController.createPlayer
-                (config.getSupervisorLogin(), regularUser);
+        Response createResponse = playerController.createPlayer
+                (config.getSupervisorLogin(), config.getSupervisorPassword(), regularUser);
 
         assertEquals(createResponse.getStatusCode(), 200,
                 "The response code should be 200");
         Player createdUser = createResponse.as(Player.class);
 
         Player newPlayer = Player.createValidPlayer();
-        Response response = PlayerController.createPlayer(createdUser.getLogin(), newPlayer);
+        Response response = playerController.createPlayer(createdUser.getLogin(), config.getSupervisorPassword(), newPlayer);
 
         assertEquals(response.getStatusCode(), 403,
                 "The response code should be 403 (Forbidden)");
@@ -159,13 +153,10 @@ public class PlayerControllerTest extends BaseTest{
     @Story("Get Player")
     @Description("Positive test: Getting player by ID")
     public void testGetPlayerPositive() {
-
         if (createdPlayerId == null) {
             testCreatePlayerPositive();
         }
-
-        Response response = PlayerController.getPlayer(createdPlayerId);
-
+        Response response = playerController.getPlayer(createdPlayerId);
         assertEquals(response.getStatusCode(), 200,
                 "The response code should be 200");
         Player player = response.as(Player.class);
@@ -179,7 +170,7 @@ public class PlayerControllerTest extends BaseTest{
     public void testGetPlayerNegativeNonExistent() {
 
         Long nonExistentId = 999999L;
-        Response response = PlayerController.getPlayer(nonExistentId);
+        Response response = playerController.getPlayer(nonExistentId);
 
 
         assertEquals(response.getStatusCode(), 404,
@@ -195,7 +186,7 @@ public class PlayerControllerTest extends BaseTest{
             testCreatePlayerPositive();
         }
 
-        Response getResponse = PlayerController.getPlayer(createdPlayerId);
+        Response getResponse = playerController.getPlayer(createdPlayerId);
         assertEquals(getResponse.getStatusCode(), 200,
                 "The response code should be 200");
         Player currentPlayer = getResponse.as(Player.class);
@@ -204,8 +195,8 @@ public class PlayerControllerTest extends BaseTest{
         updatedPlayer.setAge(30);
         updatedPlayer.setScreenName("UpdatedScreenName" + System.currentTimeMillis());
 
-        Response response = PlayerController.updatePlayer
-                (config.getSupervisorLogin(), createdPlayerId, updatedPlayer);
+        Response response = playerController.updatePlayer
+                (config.getSupervisorLogin(), config.getAdminPassword(), createdPlayerId, updatedPlayer);
 
         assertEquals(response.getStatusCode(), 200,
                 "The response code should be 200");
@@ -237,8 +228,8 @@ public class PlayerControllerTest extends BaseTest{
         Player updatedPlayer = new Player();
         updatedPlayer.setAge(10);
 
-        Response response = PlayerController.updatePlayer
-                (config.getSupervisorLogin(), createdPlayerId, updatedPlayer);
+        Response response = playerController.updatePlayer
+                (config.getSupervisorLogin(), config.getAdminPassword(), createdPlayerId, updatedPlayer);
 
         assertEquals(response.getStatusCode(), 400,
                 "The response code should be 400");
@@ -251,7 +242,6 @@ public class PlayerControllerTest extends BaseTest{
     @Story("Update Player")
     @Description("Negative test: Updating a player with an invalid password")
     public void testUpdatePlayerNegativeInvalidPassword() {
-
         if (createdPlayerId == null) {
             testCreatePlayerPositive();
         }
@@ -259,9 +249,8 @@ public class PlayerControllerTest extends BaseTest{
         Player updatedPlayer = new Player();
         updatedPlayer.setPassword("short");
 
-        Response response = PlayerController.updatePlayer
-                (config.getSupervisorLogin(), createdPlayerId, updatedPlayer);
-
+        Response response = playerController.updatePlayer
+                (config.getAdminLogin(), config.getAdminPassword(), createdPlayerId, updatedPlayer);
         assertEquals(response.getStatusCode(), 400,
                 "The response code should be 400");
         String errorMsg = response.getBody().asString();
@@ -278,8 +267,8 @@ public class PlayerControllerTest extends BaseTest{
         updatedPlayer.setAge(30);
 
         Long nonExistentId = 999999L;
-        Response response = PlayerController.updatePlayer
-                (config.getSupervisorLogin(), nonExistentId, updatedPlayer);
+        Response response = playerController.updatePlayer
+                (config.getSupervisorLogin(), config.getAdminPassword(), nonExistentId, updatedPlayer);
 
         assertEquals(response.getStatusCode(), 404,
                 "The response code should be 404 (Not Found)");
@@ -296,8 +285,8 @@ public class PlayerControllerTest extends BaseTest{
         }
 
         Player regularUser = Player.createValidPlayer();
-        Response createResponse = PlayerController.createPlayer
-                (config.getSupervisorLogin(), regularUser);
+        Response createResponse = playerController.createPlayer
+                (config.getSupervisorLogin(), config.getSupervisorPassword(), regularUser);
         assertEquals(createResponse.getStatusCode(), 200,
                 "The response code should be 200");
         Player createdUser = createResponse.as(Player.class);
@@ -305,8 +294,8 @@ public class PlayerControllerTest extends BaseTest{
         Player updatedPlayer = new Player();
         updatedPlayer.setAge(30);
 
-        Response response = PlayerController.updatePlayer
-                (createdUser.getLogin(), createdPlayerId, updatedPlayer);
+        Response response = playerController.updatePlayer
+                (createdUser.getLogin(), config.getAdminPassword(), createdPlayerId, updatedPlayer);
 
         assertEquals(response.getStatusCode(), 403,
                 "The response code should be 403 (Forbidden)");
@@ -318,19 +307,19 @@ public class PlayerControllerTest extends BaseTest{
     public void testDeletePlayerPositive() {
 
         Player player = Player.createValidPlayer();
-        Response createResponse = PlayerController.createPlayer
-                (config.getSupervisorLogin(), player);
+        Response createResponse = playerController.createPlayer
+                (config.getSupervisorLogin(), config.getSupervisorPassword(), player);
         assertEquals(createResponse.getStatusCode(), 200,
                 "The response code should be 200");
         Player createdPlayer = createResponse.as(Player.class);
 
-        Response response = PlayerController.deletePlayer
+        Response response = playerController.deletePlayer
                 (config.getSupervisorLogin(), createdPlayer.getId());
 
         assertEquals(response.getStatusCode(), 200,
                 "The response code should be 200");
 
-        Response getResponse = PlayerController.getPlayer(createdPlayer.getId());
+        Response getResponse = playerController.getPlayer(createdPlayer.getId());
         assertEquals(getResponse.getStatusCode(), 404,
                 "The response code should be 404 (Not Found)");
     }
@@ -341,7 +330,7 @@ public class PlayerControllerTest extends BaseTest{
     public void testDeletePlayerNegativeNonExistent() {
 
         Long nonExistentId = 999999L;
-        Response response = PlayerController.deletePlayer
+        Response response = playerController.deletePlayer
                 (config.getSupervisorLogin(), nonExistentId);
 
         assertEquals(response.getStatusCode(), 404,
@@ -359,13 +348,13 @@ public class PlayerControllerTest extends BaseTest{
         }
 
         Player regularUser = Player.createValidPlayer();
-        Response createResponse = PlayerController.createPlayer
-                (config.getSupervisorLogin(), regularUser);
+        Response createResponse = playerController.createPlayer
+                (config.getSupervisorLogin(), config.getSupervisorPassword(), regularUser);
         assertEquals(createResponse.getStatusCode(), 200,
                 "The response code should be 200");
         Player createdUser = createResponse.as(Player.class);
 
-        Response response = PlayerController.deletePlayer
+        Response response = playerController.deletePlayer
                 (createdUser.getLogin(), createdPlayerId);
 
         assertEquals(response.getStatusCode(), 403,
@@ -377,14 +366,14 @@ public class PlayerControllerTest extends BaseTest{
     @Description("Critical test: Attempting to delete the supervisor user")
     public void testDeleteSupervisorNegative() {
 
-        Response getResponse = PlayerController.getPlayer(1L);
+        Response getResponse = playerController.getPlayer(1L);
 
         if (getResponse.getStatusCode() == 200) {
             Player supervisor = getResponse.as(Player.class);
 
             if ("supervisor".equals(supervisor.getRole())) {
 
-                Response response = PlayerController.deletePlayer
+                Response response = playerController.deletePlayer
                         (config.getAdminLogin(), supervisor.getId());
 
                 assertEquals(response.getStatusCode(), 403,
@@ -403,16 +392,16 @@ public class PlayerControllerTest extends BaseTest{
         String duplicateLogin = "duplicate" + System.currentTimeMillis();
         player1.setLogin(duplicateLogin);
 
-        Response response1 = PlayerController.createPlayer
-                (config.getSupervisorLogin(), player1);
+        Response response1 = playerController.createPlayer
+                (config.getSupervisorLogin(), config.getSupervisorPassword(), player1);
         assertEquals(response1.getStatusCode(), 200,
                 "The response code should be 200");
 
         Player player2 = Player.createValidPlayer();
         player2.setLogin(duplicateLogin);
 
-        Response response2 = PlayerController.createPlayer
-                (config.getSupervisorLogin(), player2);
+        Response response2 = playerController.createPlayer
+                (config.getSupervisorLogin(), config.getSupervisorPassword(), player2);
 
         assertEquals(response2.getStatusCode(), 400,
                 "The response code should be 400 - duplicate login is not allowed");
@@ -430,16 +419,16 @@ public class PlayerControllerTest extends BaseTest{
         String duplicateScreenName = "DuplicateScreen" + System.currentTimeMillis();
         player1.setScreenName(duplicateScreenName);
 
-        Response response1 = PlayerController.createPlayer
-                (config.getSupervisorLogin(), player1);
+        Response response1 = playerController.createPlayer
+                (config.getSupervisorLogin(), config.getSupervisorPassword(), player1);
         assertEquals(response1.getStatusCode(), 200,
                 "The response code should be 200");
 
         Player player2 = Player.createValidPlayer();
         player2.setScreenName(duplicateScreenName);
 
-        Response response2 = PlayerController.createPlayer
-                (config.getSupervisorLogin(), player2);
+        Response response2 = playerController.createPlayer
+                (config.getSupervisorLogin(), config.getSupervisorPassword(), player2);
 
         assertEquals(response2.getStatusCode(), 400,
                 "Response code should be 400 - duplicate screenName not allowed");

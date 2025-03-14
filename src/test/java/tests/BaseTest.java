@@ -7,6 +7,9 @@ import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.example.api.PlayerController;
+import org.example.api.client.DefaultRestClient;
+import org.example.api.client.RestClient;
 import org.example.config.TestConfig;
 import org.example.utils.LogUtils;
 import org.testng.ITestResult;
@@ -21,6 +24,9 @@ public class BaseTest {
     protected static final Logger logger = LogManager.getLogger(BaseTest.class);
     protected static final TestConfig config = TestConfig.getInstance();
 
+    protected RestClient restClient;
+    protected PlayerController playerController;
+
     @BeforeSuite
     public void setUp() {
         RestAssured.baseURI = config.getBaseUrl();
@@ -29,6 +35,10 @@ public class BaseTest {
                 new RequestLoggingFilter(LogDetail.ALL),
                 new ResponseLoggingFilter(LogDetail.ALL)
         );
+
+        restClient = new DefaultRestClient(config);
+        playerController = new PlayerController(restClient);
+
         LogUtils.logInfo(logger, "Test environment setup completed");
         LogUtils.logInfo(logger, "Base API URL: " + config.getBaseUrl());
         LogUtils.logInfo(logger, "Thread count for tests: " + config.getThreadCount());
